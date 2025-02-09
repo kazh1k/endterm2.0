@@ -3,45 +3,60 @@ import java.util.Scanner;
 class TaskManagerApplication {
     private final Scanner scanner = new Scanner(System.in);
     private final TaskService taskService = new TaskService();
-    private final SearchCoordinator searchCoordinator = new SearchCoordinator();
 
     public void run() {
         while (true) {
             System.out.println("\n--- Task Manager ---");
             System.out.println("1. Add Task");
-            System.out.println("2. View Tasks");
-            System.out.println("3. Update Task");
-            System.out.println("4. Delete Task");
-            System.out.println("5. Search by...");
-            System.out.println("6. Move Task to Completed");
-            System.out.println("7. Move Task to In Progress");
-            System.out.println("8. Exit");
+            System.out.println("2. View All Tasks");
+            System.out.println("3. View Archived Tasks");
+            System.out.println("4. Update Task");
+            System.out.println("5. Archive Task");
+            System.out.println("6. Delete Task");
+            System.out.println("7. Exit");
             System.out.print("Choose an option: ");
+
             int choice = scanner.nextInt();
             scanner.nextLine();
 
             switch (choice) {
                 case 1 -> taskService.addTask(scanner);
-                case 2 -> taskService.viewTasks();
-                case 3 -> taskService.updateTask(scanner);
-                case 4 -> taskService.deleteTask(scanner);
-                case 5 -> searchCoordinator.searchMenu(scanner);
-                case 6 -> {
-                    System.out.print("Enter Task ID to move to Completed: ");
+                case 2 -> taskService.viewAllTasks();
+                case 3 -> taskService.viewArchivedTasks();
+                case 4 -> taskService.updateTask(scanner, selectTable());
+                case 5 -> {
+                    String table = selectTable();
+                    System.out.print("Enter task ID to archive: ");
                     int id = scanner.nextInt();
-                    taskService.moveTaskToCompleted(id);
+                    scanner.nextLine();
+                    taskService.archiveTask(id, table);
                 }
+                case 6 -> taskService.deleteTask(scanner, selectTable());
                 case 7 -> {
-                    System.out.print("Enter Task ID to move to In Progress: ");
-                    int id = scanner.nextInt();
-                    taskService.moveTaskToInProgress(id);
-                }
-                case 8 -> {
                     System.out.println("Exiting...");
                     return;
                 }
                 default -> System.out.println("Invalid choice. Please try again.");
             }
         }
+    }
+
+    private String selectTable() {
+        System.out.println("Choose table:");
+        System.out.println("1. In Progress Tasks");
+        System.out.println("2. Completed Tasks");
+        System.out.println("3. Archived Tasks");
+        System.out.print("Enter choice: ");
+
+        String input = scanner.nextLine().trim().toLowerCase();
+        return switch (input) {
+            case "1", "in progress tasks", "in_progress_tasks" -> "in_progress_tasks";
+            case "2", "completed tasks", "completed_tasks" -> "completed_tasks";
+            case "3", "archived tasks", "archived_tasks" -> "archived_tasks";
+            default -> {
+                System.out.println("Invalid table. Defaulting to 'in_progress_tasks'.");
+                yield "in_progress_tasks";
+            }
+        };
     }
 }
