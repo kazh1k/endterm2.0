@@ -3,6 +3,7 @@ import java.util.Scanner;
 class TaskManagerApplication {
     private final Scanner scanner = new Scanner(System.in);
     private final TaskService taskService = new TaskService();
+    private final SearchCoordinator searchCoordinator = new SearchCoordinator();
 
     public void run() {
         while (true) {
@@ -13,7 +14,8 @@ class TaskManagerApplication {
             System.out.println("4. Update Task");
             System.out.println("5. Archive Task");
             System.out.println("6. Delete Task");
-            System.out.println("7. Exit");
+            System.out.println("7. Search Tasks");
+            System.out.println("8. Exit");
             System.out.print("Choose an option: ");
 
             int choice = scanner.nextInt();
@@ -32,7 +34,8 @@ class TaskManagerApplication {
                     taskService.archiveTask(id, table);
                 }
                 case 6 -> taskService.deleteTask(scanner, selectTable());
-                case 7 -> {
+                case 7 -> searchCoordinator.searchMenu(scanner); // ВОЗВРАЩАЕМ ФУНКЦИЮ ПОИСКА!
+                case 8 -> {
                     System.out.println("Exiting...");
                     return;
                 }

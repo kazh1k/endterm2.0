@@ -1,9 +1,11 @@
 import java.util.Scanner;
 
 public class SearchCoordinator {
-    private final TitleSearcher titleSearcher = new TitleSearcher();
-    private final DateSearcher dateSearcher = new DateSearcher();
-    private final IdSearcher idSearcher = new IdSearcher();
+    private final TaskSearchable[] searchers = {
+            new TitleSearcher(),
+            new DateSearcher(),
+            new IdSearcher()
+    };
 
     public void searchMenu(Scanner scanner) {
         System.out.println("\n--- Search Tasks ---");
@@ -15,11 +17,10 @@ public class SearchCoordinator {
         int choice = scanner.nextInt();
         scanner.nextLine();
 
-        switch (choice) {
-            case 1 -> titleSearcher.search(scanner);
-            case 2 -> dateSearcher.search(scanner);
-            case 3 -> idSearcher.search(scanner);
-            default -> System.out.println("Invalid search option");
+        if (choice >= 1 && choice <= searchers.length) {
+            searchers[choice - 1].search(scanner);
+        } else {
+            System.out.println("Invalid search option");
         }
     }
 }
